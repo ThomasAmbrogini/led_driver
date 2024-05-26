@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/release.dir/led.c.o CMakeFiles/release.dir/main.c.o -o ../bin/release
