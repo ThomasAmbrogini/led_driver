@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/led_driver_test_app.dir/led_driver_test.c.o -o ../../bin/led_driver_test_app  -lsrc ../../unity/libunity.a
