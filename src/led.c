@@ -1,43 +1,17 @@
 #include "led.h"
 
-static uint16_t leds = 0u;
+uint16_t * leds_address;
 
-void initLeds() {
-    turnAllOff();
+void ledDriverInit(uint16_t * address) {
+    leds_address = address;
+    *leds_address = 0;
 }
 
-void turnOn(enum Led led) {
-    uint16_t led_mask = 1 << led;
-    leds |= led_mask;
+void ledTurnOn(uint8_t led_number) {
+    *leds_address = 1;
 }
 
-void turnOff(enum Led led) {
-    uint16_t led_mask = 0 << led;
-    leds &= led_mask;
-}
-
-void turnAllOn() {
-    for (int i = 0; i < LED_COUNT; ++i) {
-        turnOn(i);
-    }
-}
-
-void turnAllOff() {
-    for (int i = 0; i < LED_COUNT; ++i) {
-        turnOff(i);
-    }
-}
-
-enum LedState getLedState(enum Led led) {
-    enum LedState ret = INVALID;
-    uint16_t retrieve_mask = 1 << led;
-    ret = (leds & retrieve_mask)  >> led;
-
-    return ret;
-}
-
-uint16_t getLeds()
-{
-    return leds;
+void ledTurnOff(uint8_t led_number) {
+    *leds_address = 0;
 }
 
