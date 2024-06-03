@@ -1,3 +1,3 @@
-file(GLOB SOURCES ./*.c)
-add_library(led STATIC led.c)
+add_subdirectory(util)
+add_subdirectory(led)
 

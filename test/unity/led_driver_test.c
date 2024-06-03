@@ -1,5 +1,6 @@
 #include "unity.h"
 #include "led.h"
+#include "runtime_error_mock.h"
 
 static uint16_t virtual_leds = 0x0;
 
@@ -50,6 +51,35 @@ void ledsHardwareNotReadable(void) {
     TEST_ASSERT_EQUAL_HEX16(0x80, virtual_leds);
 }
 
+void ledsBoundaryCheck(void) {
+    ledTurnOn(LED16);
+    ledTurnOn(LED1);
+    TEST_ASSERT_EQUAL_HEX16(0x8001, virtual_leds);
+}
+
+void ledsOutOfBoundTurnOn(void) {
+    ledTurnOn(-1);
+    ledTurnOn(16);
+    ledTurnOn(3141);
+    TEST_ASSERT_EQUAL_HEX16(0x0, virtual_leds);
+}
+
+void ledsOutOfBoundTurnOff(void) {
+    ledsTurnAllOn();
+
+    ledTurnOff(-1);
+    ledTurnOff(16);
+    ledTurnOff(3141);
+    TEST_ASSERT_EQUAL_HEX16(0xFFFF, virtual_leds);
+}
+
+void ledsOutOfBoundRuntimeErrorTurnOn(void) {
+    ledTurnOn(-1);
+    TEST_ASSERT_EQUAL_STRING("LED driver: out of bounds led",
+                             runtimeErrorMockGetLastError());
+    TEST_ASSERT_EQUAL_UINT8(-1, runtimeErrorMockGetLastParameter());
+}
+
 // not needed when using generate_test_runner.rb
 int main(void) {
     UNITY_BEGIN();
@@ -60,6 +90,10 @@ int main(void) {
     RUN_TEST(turnOffLedOne);
     RUN_TEST(turnOffAnyLed);
     RUN_TEST(ledsHardwareNotReadable);
+    RUN_TEST(ledsBoundaryCheck);
+    RUN_TEST(ledsOutOfBoundTurnOn);
+    RUN_TEST(ledsOutOfBoundTurnOff);
+    RUN_TEST(ledsOutOfBoundRuntimeErrorTurnOn);
     return UNITY_END();
 }
 
