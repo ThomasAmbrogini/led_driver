@@ -9,6 +9,7 @@ void setUp(void) {
 }
 
 void tearDown(void) {
+    runtimeErrorMockReset();
 }
 
 void ledsOffAfterLedDriverInit(void) {
@@ -28,9 +29,22 @@ void turnOnMultipleLeds(void) {
     TEST_ASSERT_EQUAL_HEX16(0x180, virtual_leds);
 }
 
+void turnOffMultipleLeds(void) {
+    ledsTurnAllOn();
+    ledTurnOff(LED8);
+    ledTurnOff(LED9);
+    TEST_ASSERT_EQUAL_HEX16(0xFE7F, virtual_leds);
+}
+
 void turnOnAllLeds(void) {
     ledsTurnAllOn();
     TEST_ASSERT_EQUAL_HEX16(0xFFFF, virtual_leds);
+}
+
+void turnOffAllLeds(void) {
+    ledsTurnAllOn();
+    ledsTurnAllOff();
+    TEST_ASSERT_EQUAL_HEX16(0x0, virtual_leds);
 }
 
 void turnOffLedOne(void) {
@@ -77,7 +91,38 @@ void ledsOutOfBoundRuntimeErrorTurnOn(void) {
     ledTurnOn(-1);
     TEST_ASSERT_EQUAL_STRING("LED driver: out of bounds led",
                              runtimeErrorMockGetLastError());
-    TEST_ASSERT_EQUAL_UINT8(-1, runtimeErrorMockGetLastParameter());
+    TEST_ASSERT_EQUAL_INT(-1, runtimeErrorMockGetLastParameter());
+}
+
+void ledsOutOfBoundRuntimeErrorTurnOff(void) {
+    ledsTurnAllOn();
+    ledTurnOff(-1);
+    TEST_ASSERT_EQUAL_STRING("LED driver: out of bounds led",
+                             runtimeErrorMockGetLastError());
+    TEST_ASSERT_EQUAL_INT(-1, runtimeErrorMockGetLastParameter());
+}
+
+void isOn(void) {
+    TEST_ASSERT_FALSE(ledIsOn(LED12));
+    ledTurnOn(LED12);
+    TEST_ASSERT_TRUE(ledIsOn(LED12));
+}
+
+void isOnOutOfBound(void) {
+    TEST_ASSERT_FALSE(ledIsOn(-1));
+    TEST_ASSERT_FALSE(ledIsOn(3439));
+}
+
+void isOff(void) {
+    ledsTurnAllOn();
+    TEST_ASSERT_FALSE(ledIsOff(LED12));
+    ledTurnOff(LED12);
+    TEST_ASSERT_TRUE(ledIsOff(LED12));
+}
+
+void todoFeature(void) {
+    TEST_IGNORE();
+//    TEST_IGNORE_MESSAGE("What should I do about this?");
 }
 
 // not needed when using generate_test_runner.rb
@@ -86,7 +131,9 @@ int main(void) {
     RUN_TEST(ledsOffAfterLedDriverInit);
     RUN_TEST(turnOnLedOne);
     RUN_TEST(turnOnMultipleLeds);
+    RUN_TEST(turnOffMultipleLeds);
     RUN_TEST(turnOnAllLeds);
+    RUN_TEST(turnOffAllLeds);
     RUN_TEST(turnOffLedOne);
     RUN_TEST(turnOffAnyLed);
     RUN_TEST(ledsHardwareNotReadable);
@@ -94,6 +141,11 @@ int main(void) {
     RUN_TEST(ledsOutOfBoundTurnOn);
     RUN_TEST(ledsOutOfBoundTurnOff);
     RUN_TEST(ledsOutOfBoundRuntimeErrorTurnOn);
+    RUN_TEST(ledsOutOfBoundRuntimeErrorTurnOff);
+    RUN_TEST(isOn);
+    RUN_TEST(isOnOutOfBound);
+    RUN_TEST(isOff);
+    RUN_TEST(todoFeature);
     return UNITY_END();
 }
 

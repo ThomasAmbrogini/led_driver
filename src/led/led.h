@@ -26,9 +26,12 @@ enum Led {
 };
 
 void ledDriverInit(uint16_t * led_address);
-void ledTurnOn(uint8_t led_number);
-void ledTurnOff(uint8_t led_number);
+void ledTurnOn(enum Led led_number);
+void ledTurnOff(enum Led led_number);
 void ledsTurnAllOn();
+void ledsTurnAllOff();
+uint8_t ledIsOn(enum Led led_number);
+uint8_t ledIsOff(enum Led led_number);
 
 #endif /* __LED_DRIVER_H__ */
 
