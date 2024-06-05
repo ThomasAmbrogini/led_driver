@@ -15,67 +15,67 @@ void tearDown(void) {
 void ledsOffAfterLedDriverInit(void) {
     uint16_t virtual_leds = 0xFFFF;
     ledDriverInit(&virtual_leds);
-    TEST_ASSERT_EQUAL_HEX16(0x0, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0x0, getLedValues());
 }
 
 void turnOnLedOne(void) {
     ledTurnOn(LED1);
-    TEST_ASSERT_EQUAL_HEX16(0x1, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0x1, getLedValues());
 }
 
 void turnOnMultipleLeds(void) {
     ledTurnOn(LED8);
     ledTurnOn(LED9);
-    TEST_ASSERT_EQUAL_HEX16(0x180, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0x180, getLedValues());
 }
 
 void turnOffMultipleLeds(void) {
     ledsTurnAllOn();
     ledTurnOff(LED8);
     ledTurnOff(LED9);
-    TEST_ASSERT_EQUAL_HEX16(0xFE7F, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0xFE7F, getLedValues());
 }
 
 void turnOnAllLeds(void) {
     ledsTurnAllOn();
-    TEST_ASSERT_EQUAL_HEX16(0xFFFF, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0xFFFF, getLedValues());
 }
 
 void turnOffAllLeds(void) {
     ledsTurnAllOn();
     ledsTurnAllOff();
-    TEST_ASSERT_EQUAL_HEX16(0x0, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0x0, getLedValues());
 }
 
 void turnOffLedOne(void) {
     ledTurnOn(LED1);
     ledTurnOff(LED1);
-    TEST_ASSERT_EQUAL_HEX16(0x0, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0x0, getLedValues());
 }
 
 void turnOffAnyLed(void) {
     ledsTurnAllOn();
     ledTurnOff(LED9);
-    TEST_ASSERT_EQUAL_HEX16(0xfeff, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0xfeff, getLedValues());
 }
 
 void ledsHardwareNotReadable(void) {
-    virtual_leds = ALL_LEDS_ON;
+    virtual_leds = ALL_LEDS_OFF;
     ledTurnOn(LED8);
-    TEST_ASSERT_EQUAL_HEX16(0x80, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0x80, getLedValues());
 }
 
 void ledsBoundaryCheck(void) {
     ledTurnOn(LED16);
     ledTurnOn(LED1);
-    TEST_ASSERT_EQUAL_HEX16(0x8001, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0x8001, getLedValues());
 }
 
 void ledsOutOfBoundTurnOn(void) {
     ledTurnOn(-1);
     ledTurnOn(16);
     ledTurnOn(3141);
-    TEST_ASSERT_EQUAL_HEX16(0x0, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0x0, getLedValues());
 }
 
 void ledsOutOfBoundTurnOff(void) {
@@ -84,7 +84,7 @@ void ledsOutOfBoundTurnOff(void) {
     ledTurnOff(-1);
     ledTurnOff(16);
     ledTurnOff(3141);
-    TEST_ASSERT_EQUAL_HEX16(0xFFFF, virtual_leds);
+    TEST_ASSERT_EQUAL_HEX16(0xFFFF, getLedValues());
 }
 
 void ledsOutOfBoundRuntimeErrorTurnOn(void) {

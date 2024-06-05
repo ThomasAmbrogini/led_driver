@@ -25,6 +25,7 @@ enum Led {
     LED16
 };
 
+uint16_t getLedValues(void);
 void ledDriverInit(uint16_t * led_address);
 void ledTurnOn(enum Led led_number);
 void ledTurnOff(enum Led led_number);
