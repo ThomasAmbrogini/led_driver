@@ -11,9 +11,14 @@ uint16_t getLedValues(void) {
     return leds_image;
 }
 
-void ledDriverInit(uint16_t * address) {
+void ledDriverInit(uint16_t * address, uint8_t logic_type) {
     leds_address = address;
-    leds_image = ALL_LEDS_OFF;
+    if (logic_type) {
+        leds_image = ALL_LEDS_OFF;
+    }
+    else {
+        leds_image = ALL_LEDS_ON;
+    }
     *leds_address = leds_image;
 }
 
@@ -53,6 +58,9 @@ uint8_t ledIsOn(enum Led led_number) {
 
     if (!isLedOutOfBound(led_number)) {
         ret = !!(leds_image & (1 << led_number));
+    }
+    else {
+        ret = !!(~leds_image & (1 << led_number));
     }
 
     return ret;

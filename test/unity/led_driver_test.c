@@ -3,9 +3,10 @@
 #include "runtime_error_mock.h"
 
 static uint16_t virtual_leds = 0x0;
+static enum LedLogic logic_type = INVERTED;
 
-void setUp(void) {
-    ledDriverInit(&virtual_leds);
+void setUp(void) { 
+    ledDriverInit(&virtual_leds, logic_type);
 }
 
 void tearDown(void) {
@@ -13,8 +14,14 @@ void tearDown(void) {
 }
 
 void ledsOffAfterLedDriverInit(void) {
-    uint16_t virtual_leds = 0xFFFF;
-    ledDriverInit(&virtual_leds);
+    uint16_t virtual_leds = 0u;
+    if (logic_type == REGULAR) {
+        virtual_leds = ALL_LEDS_ON;
+    }
+    else {
+        virtual_leds = ALL_LEDS_OFF;
+    }
+    ledDriverInit(&virtual_leds, logic_type);
     TEST_ASSERT_EQUAL_HEX16(0x0, getLedValues());
 }
 
@@ -60,7 +67,13 @@ void turnOffAnyLed(void) {
 }
 
 void ledsHardwareNotReadable(void) {
-    virtual_leds = ALL_LEDS_OFF;
+    if (logic_type == REGULAR) {
+        virtual_leds = ALL_LEDS_ON;
+    }
+    else {
+        virtual_leds = ALL_LEDS_OFF;
+    }
+
     ledTurnOn(LED8);
     TEST_ASSERT_EQUAL_HEX16(0x80, getLedValues());
 }

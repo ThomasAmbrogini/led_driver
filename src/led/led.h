@@ -6,6 +6,11 @@
 #define ALL_LEDS_ON 0xFFFF
 #define ALL_LEDS_OFF 0x0
 
+enum LedLogic {
+    INVERTED,
+    REGULAR
+};
+
 enum Led {
     LED1 = 0,
     LED2,
@@ -26,7 +31,7 @@ enum Led {
 };
 
 uint16_t getLedValues(void);
-void ledDriverInit(uint16_t * led_address);
+void ledDriverInit(uint16_t * led_address, enum LedLogic logic_type);
 void ledTurnOn(enum Led led_number);
 void ledTurnOff(enum Led led_number);
 void ledsTurnAllOn();
